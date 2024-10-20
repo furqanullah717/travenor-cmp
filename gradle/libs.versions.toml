@@ -19,6 +19,11 @@ logback = "1.5.8"
 mysqlConnectorJava = "8.0.33"
 exposedCore = "0.41.1"
 postgresql = "42.7.2"
+koin = "3.6.0-Beta4"
+koinComposeMultiplatform = "1.2.0-Beta4"
+kotlinx-coroutines = "1.8.1"
+ktorClientSerialization = "2.3.2"
+ktorServerNetty = "2.3.0"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -54,6 +59,23 @@ exposed-core = { module = "org.jetbrains.exposed:exposed-core", version.ref = "e
 exposed-dao = { module = "org.jetbrains.exposed:exposed-dao", version.ref = "exposedCore" }
 exposed-jdbc = { module = "org.jetbrains.exposed:exposed-jdbc", version.ref = "exposedCore" }
 
+#koin
+koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
+koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin" }
+koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
+koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koinComposeMultiplatform" }
+koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel", version.ref = "koinComposeMultiplatform" }
+
+#ktor-client
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
+ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
+ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
+ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
+ktor-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
+ktor-client-serialization = { module = "io.ktor:ktor-client-serialization", version.ref = "ktorClientSerialization" }
+ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor" }
+ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
+ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktorServerNetty" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

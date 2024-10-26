@@ -1,5 +1,7 @@
 package com.codewithfk.travenor.data
 
+import com.codewithfk.travenor.Platform
+import com.codewithfk.travenor.data.models.request.LoginRequest
 import com.codewithfk.travenor.data.models.request.RegisterRequest
 import com.codewithfk.travenor.data.models.response.RegisterResponse
 import io.ktor.client.HttpClient
@@ -13,12 +15,24 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpMethod
 import io.ktor.http.contentType
 import io.ktor.utils.io.errors.IOException
+expect val baseURL:String
 
 class NetworkService(val httpClient: HttpClient) {
-    val baseURL = "http://10.0.2.2:8080"
 
     suspend fun register(request: RegisterRequest): ResultWrapper<RegisterResponse> {
-        return makeWebRequest<RegisterResponse>("$baseURL/users/register", HttpMethod.Post, body = request)
+        return makeWebRequest<RegisterResponse>(
+            "$baseURL/users/register",
+            HttpMethod.Post,
+            body = request
+        )
+    }
+
+    suspend fun login(request: LoginRequest): ResultWrapper<RegisterResponse> {
+        return makeWebRequest<RegisterResponse>(
+            "$baseURL/users/login",
+            HttpMethod.Post,
+            body = request
+        )
     }
 
     suspend inline fun <reified T> makeWebRequest(

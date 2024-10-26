@@ -20,14 +20,22 @@ class UserService(private val userRepository: UserRepository) {
         }
         val user =
             userRepository.createUser(userRequest.copy(password = hashPassword(userRequest.password)))
-        return UserResponse(user, createJwtToken(user.email))
+        return UserResponse(user, createJwtToken(user.email, user.id))
     }
 
-    fun createJwtToken(email: String): String {
+    suspend fun loginUser(email: String, password: String): UserResponse {
+        val hashedPassword = hashPassword(password)
+        val user = userRepository.signIn(email, hashedPassword)
+            ?: throw IllegalArgumentException("Invalid credentials")
+        return UserResponse(user, createJwtToken(user.email, user.id))
+    }
+
+    fun createJwtToken(email: String, id: Long): String {
         return JWT.create()
             .withAudience(jwtAudience)
             .withIssuer(jwtDomain)
             .withClaim("email", email)
+            .withClaim("userId", id)
             .withExpiresAt(Date(System.currentTimeMillis() + (24 * 60 * 60 * 60 * 1000L)))  // Token expiration time
             .sign(Algorithm.HMAC256(jwtSecret))
     }

@@ -1,6 +1,8 @@
 package com.codewithfk.travenor.di
 
+import com.codewithfk.travenor.cache.TravenorSession
 import com.codewithfk.travenor.data.NetworkService
+import com.codewithfk.travenor.ui.feature.login.LoginViewModel
 import com.codewithfk.travenor.ui.feature.register.RegisterViewModel
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
@@ -44,6 +46,12 @@ val sharedModule = module {
         NetworkService(get())
     }
     viewModel {
-        RegisterViewModel(get())
+        RegisterViewModel(get(),get())
+    }
+    viewModel {
+        LoginViewModel(get(),get())
+    }
+    single<TravenorSession> {
+        TravenorSession(get())
     }
 }

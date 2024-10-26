@@ -3,6 +3,7 @@ package com.example.repository
 import com.example.data.database.tables.UserTable
 import com.example.model.User
 import com.example.model.UserRequest
+import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -26,5 +27,15 @@ class UserRepository {
             it[password] = user.password
         } get UserTable.id
         User(user.name, user.email, id)
+    }
+
+    suspend fun signIn(email: String, password: String): User? = transaction {
+        UserTable.select { UserTable.email eq email and (UserTable.password eq password) }.map {
+            User(
+                it[UserTable.name],
+                it[UserTable.email],
+                it[UserTable.id]
+            )
+        }.singleOrNull()
     }
 }

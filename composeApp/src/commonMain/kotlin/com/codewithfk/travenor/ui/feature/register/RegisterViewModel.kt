@@ -2,6 +2,7 @@ package com.codewithfk.travenor.ui.feature.register
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.codewithfk.travenor.cache.TravenorSession
 import com.codewithfk.travenor.data.NetworkService
 import com.codewithfk.travenor.data.ResultWrapper
 import com.codewithfk.travenor.data.models.request.RegisterRequest
@@ -9,7 +10,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class RegisterViewModel(val networkService: NetworkService) : ViewModel() {
+class RegisterViewModel(val networkService: NetworkService, private val session: TravenorSession) :
+    ViewModel() {
     private val _uiState = MutableStateFlow<RegisterState>(RegisterState.Nothing)
     val uiState = _uiState.asStateFlow()
 
@@ -26,6 +28,7 @@ class RegisterViewModel(val networkService: NetworkService) : ViewModel() {
             when (response) {
                 is ResultWrapper.Success -> {
                     _uiState.value = RegisterState.Success
+                    session.saveToken(response.value.token)
                 }
 
                 is ResultWrapper.Error -> {

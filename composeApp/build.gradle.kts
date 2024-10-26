@@ -59,6 +59,9 @@ kotlin {
             implementation(libs.ktor.serialization.kotlinx.json)
             implementation(libs.ktor.client.cio)
             implementation(libs.ktor.client.logging)
+            implementation(libs.datastore)
+            implementation(libs.datastore.preferences)
+            implementation(libs.navigation.compose)
         }
         iosMain.dependencies {
         }

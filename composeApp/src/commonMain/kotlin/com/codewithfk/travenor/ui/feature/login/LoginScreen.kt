@@ -1,4 +1,4 @@
-package com.codewithfk.travenor.ui.feature.register
+package com.codewithfk.travenor.ui.feature.login
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -22,18 +22,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.codewithfk.travenor.ui.navigation.NavRouts
+import io.ktor.websocket.Frame
 import org.koin.compose.viewmodel.koinViewModel
-import org.koin.core.annotation.KoinExperimentalAPI
 
-
-@OptIn(KoinExperimentalAPI::class)
 @Composable
-fun RegisterScreen(navController: NavController, viewModel: RegisterViewModel = koinViewModel()) {
+fun LoginScreen(navController: NavController, viewModel: LoginViewModel = koinViewModel()) {
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+
     Surface(modifier = Modifier.fillMaxSize()) {
 
         val state = viewModel.uiState.collectAsState()
@@ -45,12 +45,12 @@ fun RegisterScreen(navController: NavController, viewModel: RegisterViewModel = 
         )
         {
             when (val registerState = state.value) {
-                RegisterState.Loading -> {
+                LoginState.Loading -> {
                     CircularProgressIndicator()
-                    Text("Loading")
+                    Frame.Text("Loading")
                 }
 
-                is RegisterState.Error -> {
+                is LoginState.Error -> {
                     Text(registerState.message)
                     Button(onClick = {
                         viewModel.retry()
@@ -59,38 +59,27 @@ fun RegisterScreen(navController: NavController, viewModel: RegisterViewModel = 
                     }
                 }
 
-                RegisterState.Success -> {
+                LoginState.Success -> {
                     LaunchedEffect(Unit) {
-                        navController.navigate(NavRouts.Home.route) {
-                            popUpTo(NavRouts.Register.route) {
+                        navController.navigate(NavRouts.Home.route){
+                            popUpTo(NavRouts.Login.route){
                                 inclusive = true
                             }
                         }
                     }
                 }
 
-                RegisterState.Nothing -> {
+                LoginState.Nothing -> {
                     Column(
                         Modifier.fillMaxSize().padding(16.dp),
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        var email by remember { mutableStateOf("") }
-                        var name by remember { mutableStateOf("") }
-                        var password by remember { mutableStateOf("") }
-                        var confirmPassword by remember { mutableStateOf("") }
-
                         Text(
-                            text = "Register",
+                            text = "Login",
                             modifier = Modifier.padding(vertical = 8.dp),
                             fontSize = 24.sp,
                             fontWeight = FontWeight.Bold
-                        )
-                        OutlinedTextField(
-                            value = name,
-                            onValueChange = { name = it },
-                            label = { Text("Name") },
-                            modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
                         )
                         OutlinedTextField(
                             value = email,
@@ -105,23 +94,16 @@ fun RegisterScreen(navController: NavController, viewModel: RegisterViewModel = 
                             modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
                             visualTransformation = PasswordVisualTransformation()
                         )
-                        OutlinedTextField(
-                            value = confirmPassword,
-                            onValueChange = { confirmPassword = it },
-                            label = { Text("Confirm Password") },
-                            modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
-                            visualTransformation = PasswordVisualTransformation()
-                        )
 
                         Button(
-                            onClick = { viewModel.register(name, email, password) },
+                            onClick = { viewModel.login(email, password) },
                             modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
-                            enabled = email.isNotEmpty() && password.isNotEmpty() && confirmPassword.isNotEmpty() && name.isNotEmpty() && password == confirmPassword
+                            enabled = email.isNotEmpty() && password.isNotEmpty()
                         ) {
-                            Text("Register")
+                            Text("Login")
                         }
-                        TextButton(onClick = { navController.popBackStack() }) {
-                            Text("Already have an account? Login")
+                        TextButton(onClick = { navController.navigate(NavRouts.Register.route) }) {
+                            Text("Don't have an account? Register")
                         }
                     }
                 }
